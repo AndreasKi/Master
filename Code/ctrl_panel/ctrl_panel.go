@@ -7,7 +7,10 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"errors"
 	"os/exec"
+	"io/ioutil"
+	"strings"
 	"runtime"
 	"strconv"
 	"time"
@@ -16,6 +19,8 @@ import (
 func main() {
 	//Get PID
 	pid_string = strconv.Itoa(os.Getpid())
+
+	read_configuration()
 
 	check_connectivity()
 
@@ -37,6 +42,36 @@ func open_browser() {
 	}
 
 	return
+}
+
+func read_configuration() {
+	//Read the config file
+	bytes, err := ioutil.ReadFile("../config.cfg")
+	ErrorCheck(err, true)
+	cfg := string(bytes)
+
+	lines := strings.Split(cfg, "\n")
+	for _, line := range lines {
+		if line != "" && len(line) > 2 && line[:2] != "//" {
+			tuple := strings.Split(line, "=")
+			variable := tuple[0]
+			value := tuple[1]
+
+			switch variable {
+   			case "max_number_of_daemons":
+   				target_size, err = strconv.Atoi(value)
+   				ErrorCheck(err,true)
+   			case "application_test_mode":
+   			case "coordinator_evaluation_interval":
+   			case "file_weight":
+   			case "application_runs_weight":
+   			case "changes_weight":
+      		case "battery_threshold":
+   			default:
+   				ErrorCheck(errors.New("config.cfg contained unknown variable " + variable), false)
+   			}
+		}
+	}
 }
 
 func check_connectivity() {

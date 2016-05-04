@@ -8,7 +8,7 @@ import (
 	"errors"
 	"net"
 	"strconv"
-	"ioutil"
+	"io/ioutil"
 	"sync"
 	"strings"
 	"time"
@@ -30,27 +30,27 @@ func read_configuration() {
 			switch variable {
    			case "max_number_of_daemons":
    				target_size, err = strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
    			case "application_test_mode":
    				if value == "enabled" {
    					test_applications = true
    				}
    			case "coordinator_evaluation_interval":
    				interval, err := strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
    				coord_eval_interval = time.Duration(interval) * time.Second
    			case "file_weight":
    				objs_w, err = strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
    			case "application_runs_weight":
    				runs_w, err = strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
    			case "changes_weight":
    				changes_w, err = strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
       		case "battery_threshold":
    				battery_treshold, err = strconv.Atoi(value)
-   				ErrorCheck(true)
+   				ErrorCheck(err,true)
    			default:
    				ErrorCheck(errors.New("config.cfg contained unknown variable " + variable), false)
    			}

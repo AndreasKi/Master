@@ -28,15 +28,3 @@ var timing time.Time
 var gui_notification []string
 
 var target_size = 20
-
-//Type of object to add
-//{text, image, video, sound, other}
-var obj_type = "text"
-
-//Type of mode the GUI is in
-//{add, edit}
-var mode_type = "add"
-
-//Type of mode the simulation interface is in
-//{one, all}
-var sim_mode = "one"
