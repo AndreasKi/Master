@@ -361,10 +361,6 @@ func Dial(ip_dest string, port_dest string) (net.Conn, error) {
 		return nil, err
 	}
 
-	if emulate_network {
-		fmt.Fprintf(conn, port_dest+"\n")
-	}
-
 	return conn, nil
 }
 
