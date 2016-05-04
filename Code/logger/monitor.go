@@ -36,61 +36,72 @@ func monitor_performance() {
 		tot_cpu := 0.0
 		wg := sync.WaitGroup{}
 
+		skip := false
 		var err error
 		var pids map[string]process_information
 		var child_pids map[string]children
 		if len(daemons) > 0 {
 			pids, child_pids, err = get_stats()
 			if err != nil {
-				Output()
-				os.Exit(1)
+				fmt.Println("Failed to retrieve stats on prototype, skipping instance: "+ err.Error())
+				skip = true
 			}
 		}
 
 		daemons_mu.Lock()
-		for i, d := range daemons {
-			if !d.dead {
-				alive_daemons++
-				if d.pid != "0" {
-					wg.Add(1)
-					go func(index int) {
-						not_found := true
-						cpu_val := 0.0
-						mem_val := 0
-						if PI, found := pids[daemons[index].pid]; found {
-							not_found = false
-							cpu_val = cpu_val + PI.cpu
-							mem_val = mem_val + PI.mem
-						}
-						if these_pids, found := child_pids[daemons[index].pid]; found {
-							not_found = false
-							for _, this_pid := range these_pids.pids {
-								cpu_val = cpu_val + pids[this_pid].cpu
-								mem_val = mem_val + pids[this_pid].mem
+		if !skip {
+			for i, d := range daemons {
+				if !d.dead {
+					alive_daemons++
+					if d.pid != "0" {
+						wg.Add(1)
+						go func(index int) {
+							not_found := true
+							cpu_val := 0.0
+							mem_val := 0
+							if PI, found := pids[daemons[index].pid]; found {
+								not_found = false
+								cpu_val = cpu_val + PI.cpu
+								mem_val = mem_val + PI.mem
 							}
-						}
-						if not_found {
-							daemons[index].cpu_history = append(daemons[index].cpu_history, -1.0)
-							daemons[index].dead = true
+							if these_pids, found := child_pids[daemons[index].pid]; found {
+								not_found = false
+								for _, this_pid := range these_pids.pids {
+									cpu_val = cpu_val + pids[this_pid].cpu
+									mem_val = mem_val + pids[this_pid].mem
+								}
+							}
+							if not_found {
+								daemons[index].cpu_history = append(daemons[index].cpu_history, -1.0)
+								daemons[index].dead = true
 
-							daemons[index].mem_history = append(daemons[index].mem_history, -1)
-							daemons[index].dead = true
-						} else {
-							daemons[index].cpu_history = append(daemons[index].cpu_history, cpu_val)
-							tot_cpu = tot_cpu + cpu_val
+								daemons[index].mem_history = append(daemons[index].mem_history, -1)
+								daemons[index].dead = true
+							} else {
+								daemons[index].cpu_history = append(daemons[index].cpu_history, cpu_val)
+								tot_cpu = tot_cpu + cpu_val
 
-							daemons[index].mem_history = append(daemons[index].mem_history, mem_val)
-							tot_mem = tot_mem + mem_val
-						}
-						wg.Done()
-					}(i)
+								daemons[index].mem_history = append(daemons[index].mem_history, mem_val)
+								tot_mem = tot_mem + mem_val
+							}
+							wg.Done()
+						}(i)
+					} else {
+						daemons[i].mem_history = append(daemons[i].mem_history, -1)
+						daemons[i].cpu_history = append(daemons[i].cpu_history, -1.0)
+					}
 				} else {
-					d.mem_history = append(d.mem_history, -1.0)
-					d.cpu_history = append(d.cpu_history, -1.0)
+					daemons[i].mem_history = append(daemons[i].mem_history, -1)
+					daemons[i].cpu_history = append(daemons[i].cpu_history, -1.0)
 				}
-			} else {
-				d.mem_history = append(d.mem_history, -1.0)
-				d.cpu_history = append(d.cpu_history, -1.0)
+			}
+		} else {
+			for index, d := range daemons {
+				if !d.dead {
+					alive_daemons++
+				}
+				daemons[index].mem_history = append(daemons[index].mem_history, -1)
+				daemons[index].cpu_history = append(daemons[index].cpu_history, -1.0)
 			}
 		}
 		wg.Wait()
