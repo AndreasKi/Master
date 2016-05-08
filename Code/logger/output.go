@@ -11,13 +11,13 @@ func Output() {
 	finished.Add(1)
 	time := time.Now()
 	os.Mkdir("logs/"+time.String(), 0777)
-	html := CreateHTML(time)
-	f, err := os.Create("logs/"+time.String()+"/Graphics.html")
-	ErrorCheck(err, true)
+	//html := CreateHTML(time)
+	//f, err := os.Create("logs/"+time.String()+"/Graphics.html")
+	//ErrorCheck(err, true)
 
-	_, err = f.WriteString(html)
-	ErrorCheck(err, true)
-	f.Close()
+	//_, err = f.WriteString(html)
+	//ErrorCheck(err, true)
+	//f.Close()
 
 	CreateDump(time)
 
