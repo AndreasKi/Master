@@ -26,23 +26,56 @@ func Output() {
 }
 
 func CreateDump(time time.Time) {
+	//Create total dump
+	f_tot_cpu, err := os.Create("logs/"+time.String()+"/dump_total_cpu.csv")
+	ErrorCheck(err, true)
+
+	dump_cpu := "time(s),CPU(percentage)\n"
+	for t, val:= range cpu_history {
+		dump_cpu = dump_cpu + strconv.Itoa(t * interval) + "," + strconv.FormatFloat(val, 'f', 1, 64) + "\n"
+	}
+
+	_, err = f_tot_cpu.WriteString(dump_cpu)
+	ErrorCheck(err, true)
+	f_tot_cpu.Close()
+
+	f_tot_mem, err := os.Create("logs/"+time.String()+"/dump_total_mem.csv")
+	ErrorCheck(err, true)
+
+	dump_mem := "time(s),memory(KB)\n"
+	for t, val:= range mem_history {
+		dump_mem = dump_mem + strconv.Itoa(t * interval) + "," + strconv.Itoa(val) + "\n"
+	}
+
+	_, err = f_tot_mem.WriteString(dump_mem)
+	ErrorCheck(err, true)
+	f_tot_mem.Close()
+
+	//Create individual dumps
 	for index , d := range daemons {
-		f, err := os.Create("logs/"+time.String()+"/dump_device_" + strconv.Itoa(index + 1) + ".txt")
+		f_cpu, err := os.Create("logs/"+time.String()+"/dump_device_" + strconv.Itoa(index + 1) + "_cpu.csv")
 		ErrorCheck(err, true)
 
-		dump := "CPU:\n"
+		dump_cpu = "time(s),CPU(percentage)\n"
 		for t, val:= range d.cpu_history {
-			dump = dump + strconv.Itoa(d.start_time * interval + t * interval) + "\t" + strconv.FormatFloat(val, 'f', 1, 64) + "\n"
+			dump_cpu = dump_cpu + strconv.Itoa(d.start_time * interval + t * interval) + "," + strconv.FormatFloat(val, 'f', 1, 64) + "\n"
 		}
 
-		dump = dump + "\nMem:\n"
-		for t, val:= range d.mem_history {
-			dump = dump + strconv.Itoa(d.start_time * interval + t * interval) + "\t" + strconv.Itoa(val) + "\n"
-		}
-
-		_, err = f.WriteString(dump)
+		_, err = f_cpu.WriteString(dump_cpu)
 		ErrorCheck(err, true)
-		f.Close()
+		f_cpu.Close()
+
+		f_mem, err := os.Create("logs/"+time.String()+"/dump_device_" + strconv.Itoa(index + 1) + "_mem.csv")
+		ErrorCheck(err, true)
+
+		dump_mem = "time(s),memory(KB)\n"
+		for t, val:= range d.mem_history {
+			dump_mem = dump_mem + strconv.Itoa(d.start_time * interval + t * interval) + "," + strconv.Itoa(val) + "\n"
+		}
+
+		_, err = f_mem.WriteString(dump_mem)
+		ErrorCheck(err, true)
+		f_mem.Close()
 	}
 }
 
