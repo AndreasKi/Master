@@ -1,4 +1,4 @@
-//filename: rpcs.go
+//filename: remote_commands.go
 //information: created on 5th of November 2015 by Andreas Kittilsland
 //Contains specific communications functions
 package main
@@ -17,7 +17,7 @@ var sel_view_start = -1
 var sel_view_end = -1
 
 //Create a new document
-func rpc_new_file(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_new_file(conn net.Conn, conn_reader *bufio.Reader) {
 	GuiInterface.New_file()
 	if GuiInterface.Log == "New file created" {
 		WriteLines(conn, "ack")
@@ -28,7 +28,7 @@ func rpc_new_file(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Open a given file
-func rpc_open_file(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_open_file(conn net.Conn, conn_reader *bufio.Reader) {
 	path := ReadLine(conn_reader)
 
 	GuiInterface.Openpath = "file:" + path
@@ -44,7 +44,7 @@ func rpc_open_file(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Get the subset of the text that is visisble in the remote interface
-func rpc_get_text(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_get_text(conn net.Conn, conn_reader *bufio.Reader) {
 	abs_start_pos := ReadLine(conn_reader)
 	rel_end_pos := ReadLine(conn_reader)
 
@@ -97,7 +97,7 @@ func rpc_get_text(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Save the open file
-func rpc_save_file(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_save_file(conn net.Conn, conn_reader *bufio.Reader) {
 	FileLock.Lock()
 
 	GuiInterface.Savepath = GuiInterface.Openpath
@@ -113,7 +113,7 @@ func rpc_save_file(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Update text
-func rpc_update(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_update(conn net.Conn, conn_reader *bufio.Reader) {
 	diffp := ReadIntLine(conn_reader)
 	equp := ReadIntLine(conn_reader)
 
@@ -132,7 +132,7 @@ func rpc_update(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Make bold
-func rpc_make_bold(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_make_bold(conn net.Conn, conn_reader *bufio.Reader) {
 	SetTextFormattingSettings(conn, conn_reader)
 	GuiInterface.Make_bold()
 
@@ -150,7 +150,7 @@ func rpc_make_bold(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Make italic
-func rpc_make_italic(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_make_italic(conn net.Conn, conn_reader *bufio.Reader) {
 	SetTextFormattingSettings(conn, conn_reader)
 	GuiInterface.Make_italic()
 
@@ -168,7 +168,7 @@ func rpc_make_italic(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Make underlined
-func rpc_make_underlined(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_make_underlined(conn net.Conn, conn_reader *bufio.Reader) {
 	SetTextFormattingSettings(conn, conn_reader)
 	GuiInterface.Make_underlined()
 
@@ -212,7 +212,7 @@ func SetTextFormattingSettings(conn net.Conn, conn_reader *bufio.Reader) {
 }
 
 //Close the application
-func rpc_exit(conn net.Conn, conn_reader *bufio.Reader) {
+func rc_exit(conn net.Conn, conn_reader *bufio.Reader) {
 	WriteLines(conn, "ack")
 	os.Exit(0)
 	return

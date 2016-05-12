@@ -40,21 +40,21 @@ func connection_handler(conn net.Conn) {
 	line := ReadLine(conn_reader)
 
 	if line == "open" {
-		rpc_open_file(conn, conn_reader)
+		rc_open_file(conn, conn_reader)
 	} else if line == "get" {
-		rpc_get_text(conn, conn_reader)
+		rc_get_text(conn, conn_reader)
 	} else if line == "save" {
-		rpc_save_file(conn, conn_reader)
+		rc_save_file(conn, conn_reader)
 	} else if line == "update" {
-		rpc_update(conn, conn_reader)
+		rc_update(conn, conn_reader)
 	} else if line == "bold" {
-		rpc_make_bold(conn, conn_reader)
+		rc_make_bold(conn, conn_reader)
 	} else if line == "italic" {
-		rpc_make_italic(conn, conn_reader)
+		rc_make_italic(conn, conn_reader)
 	} else if line == "underlined" {
-		rpc_make_underlined(conn, conn_reader)
+		rc_make_underlined(conn, conn_reader)
 	} else if line == "exit" {
-		rpc_exit(conn, conn_reader)
+		rc_exit(conn, conn_reader)
 	} else {
 		WriteLines(conn, "Failed to understand message.")
 		ErrorCheck(errors.New("Failed to understand message."))

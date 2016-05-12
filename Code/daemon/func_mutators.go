@@ -6,7 +6,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"time"
+	//"time"
 )
 
 func FindFreeID() int {
@@ -89,11 +89,12 @@ func AddObject(id int, version int, attributes map[string]string, timer string, 
 			}
 		}
 	}
-	t1, err := time.Parse(time.RFC3339, timer)
-	ErrorCheck(err, true)
-	t_dur := time.Since(t1)
-	ToScreen("> Object added or changed. Now has "+strconv.Itoa(len(objects))+" objects."+
-		"\n> Time from instigation to local synchronization: ", t_dur)
+	//t1, err := time.Parse(time.RFC3339, timer)
+	//ErrorCheck(err, true)
+	//t_dur := time.Since(t1)
+	ToScreen("> Object added or changed. Now has "+strconv.Itoa(len(objects))+" data files.")
+	//ToScreen("> Object added or changed. Now has "+strconv.Itoa(len(objects))+" data files."+
+	//	"\n> Time from instigation to local synchronization: ", t_dur)
 
 	//DumpTime(t_dur, timer, id)
 
@@ -125,11 +126,12 @@ func RemoveObject(id int, timer string) error {
 		delete(objects, id)
 		delete(locks, id)
 		delete(version_vector, id)
-		t1, err := time.Parse(time.RFC3339, timer)
-		ErrorCheck(err, true)
-		t_dur := time.Since(t1)
-		ToScreen("> Object removed. Now has "+strconv.Itoa(len(objects))+" objects."+
-			"\n> Time from instigation to local synchronization: ", t_dur)
+		//t1, err := time.Parse(time.RFC3339, timer)
+		//ErrorCheck(err, true)
+		//t_dur := time.Since(t1)
+		ToScreen("> Object removed. Now has "+strconv.Itoa(len(objects))+" data files.")
+		//ToScreen("> Object removed. Now has "+strconv.Itoa(len(objects))+" data files."+
+		//	"\n> Time from instigation to local synchronization: ", t_dur)
 		//DumpTime(t_dur, timer, id)
 
 	} else {

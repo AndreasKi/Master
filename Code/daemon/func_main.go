@@ -49,7 +49,7 @@ func main() {
 
 	std_dir = std_dir + "daemon_" + port + "/"
 	daemon_dir, _ = os.Getwd()
-	CreateDumpFile()     //file-handling.go
+	//CreateDumpFile()     //file-handling.go
 	CheckFileDirExists() //file-handling.go
 
 	ToScreen("Starting servers...")
