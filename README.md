@@ -1,9 +1,9 @@
 # Master
 **To build:**
-```./build.sh```
+```build.sh```
 
 **To clean:**
-```./clean.sh```
+```clean.sh```
 
 **To run:**
 ```run.sh <number of daemons> <coordinator mode>```
@@ -14,5 +14,5 @@
 
 local_run.sh can also be used, communicates over loopback
 
-```./gui.sh``` to open a graphical interface
+```gui.sh``` to open a graphical interface
 
