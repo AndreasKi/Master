@@ -7,7 +7,7 @@
 
 ```./clean.sh```
 
-######
+###### To run:
 
 ```run.sh <number of daemons> <coordinator mode>```
 
