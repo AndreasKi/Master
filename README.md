@@ -1,7 +1,7 @@
 # Master
 To run:
 
-run.sh <number of daemons> <coordinator mode>
+'run.sh <number of daemons> <coordinator mode>'
 
 <number of daemons> is a number between 1 and the maximum number set in the config.cfg.
 
