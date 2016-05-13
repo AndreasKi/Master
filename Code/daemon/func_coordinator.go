@@ -175,7 +175,6 @@ func coord_InstigateUpdate(id string, version string, attributes map[string]stri
 		message_string = message_string + index + " " + item + "\n"
 	}
 	message_string = message_string + "done\n"
-
 	SendToAllDaemons(message_string) //communication.go
 
 	locks[id_checked].Unlock() //lock.go

@@ -370,7 +370,7 @@ func ToScreen(msg ...interface{}) {
 	if is_coord {
 		fmt.Println(ip_to+":"+port+" - ", msg)
 	} else if ip_to == "127.0.0.1" {
-		//fmt.Println(ip_to+":"+port+" - ", msg)
+		fmt.Println(ip_to+":"+port+" - ", msg)
 	
 	}
 	return

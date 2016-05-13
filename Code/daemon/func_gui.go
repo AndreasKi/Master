@@ -139,14 +139,21 @@ func gui_ChangeName(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fname := r.Form["fname"][0]
 	pfname := r.Form["pfname"][0]
+	id, err := strconv.Atoi(r.Form["fid"][0])
+	ErrorCheck(err, true)
 
-	wd := SetWD(daemon_dir)
-
-	os.Rename("../files/daemon_"+port+"/"+pfname, "../files/daemon_"+port+"/"+fname)
-
-	ResetWD(wd)
-
-	ToChangeTracker("name_change\n" + "daemon_" + port + "/" + pfname + ":daemon_" + port + "/" + fname + "\n")
+	obj_mu.ReadOnly()
+	if objects[id].file_path != "N/A" {
+		wd := SetWD(daemon_dir)
+		os.Rename("../files/daemon_"+port+"/"+pfname, "../files/daemon_"+port+"/"+fname)
+		ResetWD(wd)
+		ToChangeTracker("name_change\n" + "daemon_" + port + "/" + pfname + ":daemon_" + port + "/" + fname + "\n")
+		obj_mu.Editable()
+	} else {
+		obj_mu.Editable()
+		DialAndSend(coord_ip, coord_port, "change name\n"+pfname+"\n"+fname+"\n"+strconv.Itoa(id)+"\n")
+	} 
+	
 
 	color_tag := "<font color=\"red\">"
 	fmt.Fprintf(w, "<html>")
@@ -284,30 +291,30 @@ func gui_ShowMain(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "<td><center>"+color_tag+c_object.obj_type+"</font></center></td>")
 				fmt.Fprintf(w, "<td><center>"+color_tag+strconv.Itoa(i)+"</font></center></td>")
 				fmt.Fprintf(w, "<td><center>"+color_tag+strconv.Itoa(c_object.version)+"</font></center></td>")
-				for i := 0; i < len(columns)-6; i++ {
+				for in := 0; in < len(columns)-6; in++ {
 					var index string
-					if i == 0 {
+					if in == 0 {
 						index = "name"
-					} else if i == 1 {
+					} else if in == 1 {
 						index = "mod_date"
-					} else if i == 2 {
+					} else if in == 2 {
 						index = "size"
-					}/* else if i == 3 {
+					}/* else if in == 3 {
 						index = "codec"
-					} else if i == 4 {
+					} else if in == 4 {
 						index = "resolution"
-					} else if i == 5 {
+					} else if in == 5 {
 						index = "format"
-					} else if i == 6 {
+					} else if in == 6 {
 						index = "fps"
-					} else if i == 7 {
+					} else if in == 7 {
 						index = "quality"
-					} else if i == 8 {
+					} else if in == 8 {
 						index = "sample"
 					}*/
 					if val, found := c_object.attributes[index]; found {
 						if index == "name" {
-							fmt.Fprintf(w, "<td><center><form action=\"/change_name\"><input hidden type=\"text\" name=\"pfname\" value=\""+val+"\"></input><input type=\"text\" name=\"fname\" value=\""+val+"\"></input><input type=\"submit\" value=\"Save\"></form></center></td>")
+							fmt.Fprintf(w, "<td><center><form action=\"/change_name\"><input hidden type=\"text\" name=\"fid\" value=\""+strconv.Itoa(i)+"\"><input hidden type=\"text\" name=\"pfname\" value=\""+val+"\"></input><input type=\"text\" name=\"fname\" value=\""+val+"\"></input><input type=\"submit\" value=\"Save\"></form></center></td>")
 						} else {
 							fmt.Fprintf(w, "<td><center>"+color_tag+val+"</font></center></td>")
 						}

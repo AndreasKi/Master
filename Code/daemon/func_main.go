@@ -66,6 +66,7 @@ func daemon_InstigateUpdate(id string, version string, attributes map[string]str
 		msg = msg + index + " " + item + "\n"
 	}
 	msg = msg + "done\n"
+
 	WaitingUpdates.Push(msg)
 
 	return
@@ -92,7 +93,7 @@ func daemon_PushUpdates() {
 			time.Sleep(500 * time.Millisecond)
 		}
 	}
-
+	
 	for true {
 		if WaitingUpdates.Peek() == "nil" {
 			break
@@ -140,14 +141,14 @@ func AutomaticCoordinator() {
 //Send request for updating or adding an object to coordinator
 func SendInstigationRequest(id int, version int, attributes map[string]string, obj_type string) error {
 	//Lock the file on the coordinator if it is an update not an add
-	if is_coord && id != -1 {
+	/*if is_coord && id != -1 {
 		if _, ok := locks[id]; ok {
 			locks[id].Lock()
 		} else {
 			locks[id] = &ExpandedLock{}
 			locks[id].Lock()
 		}
-	}
+	}*/
 
 	metrics_times.Push("change")
 

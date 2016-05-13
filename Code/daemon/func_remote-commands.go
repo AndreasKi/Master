@@ -6,6 +6,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"os"
 	"net"
 	"strconv"
 	"time"
@@ -47,6 +48,8 @@ func rc_ConnectionHandler(conn net.Conn) {
 		WriteLines(conn, "ack")
 	} else if line == "req objs" {
 		rc_ReqObjs(conn, conn_reader)
+	} else if line == "change name" {
+		rc_ChangeName(conn, conn_reader)
 	} else if line == "run chng dtctr" {
 		rc_RunChangeTracker(conn, conn_reader)
 	} else if line == "client open file" {
@@ -551,6 +554,27 @@ func rc_CoordinatorChanged(conn net.Conn, conn_Reader *bufio.Reader) {
 	coordinator_changing.Unlock()
 	WriteLines(conn, "ack")
 	ToScreen("> I am a profane daemon")
+	return
+}
+
+//Change name of file
+func rc_ChangeName(conn net.Conn, conn_reader *bufio.Reader) {
+	pfname := ReadLine(conn_reader)
+	fname := ReadLine(conn_reader)
+	id := ReadIntLine(conn_reader)
+
+	obj_mu.ReadOnly()
+	if objects[id].file_path != "N/A" {
+		wd := SetWD(daemon_dir)
+		os.Rename("../files/daemon_"+port+"/"+pfname, "../files/daemon_"+port+"/"+fname)
+		ResetWD(wd)
+		ToChangeTracker("name_change\n" + "daemon_" + port + "/" + pfname + ":daemon_" + port + "/" + fname + "\n")
+	} else if is_coord {
+		SendToAllDaemons("change name\n"+pfname+"\n"+fname+"\n"+strconv.Itoa(id)+"\n")
+	}
+	obj_mu.Editable()
+
+	WriteLines(conn, "ack")
 	return
 }
 
