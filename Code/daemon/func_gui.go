@@ -253,12 +253,12 @@ func gui_ShowMain(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "<th>"+color_tag+"Name</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"Modification Date</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"Size</font></th>")
-		fmt.Fprintf(w, "<th>"+color_tag+"Codec</font></th>")
+		/*fmt.Fprintf(w, "<th>"+color_tag+"Codec</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"Resolution</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"Format</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"FPS</font></th>")
 		fmt.Fprintf(w, "<th>"+color_tag+"Sound Quality</font></th>")
-		fmt.Fprintf(w, "<th>"+color_tag+"Sample Rate</font></th>")
+		fmt.Fprintf(w, "<th>"+color_tag+"Sample Rate</font></th>")*/
 		fmt.Fprintf(w, "</tr>")
 
 		columns := map[string]string{
@@ -284,7 +284,7 @@ func gui_ShowMain(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "<td><center>"+color_tag+c_object.obj_type+"</font></center></td>")
 				fmt.Fprintf(w, "<td><center>"+color_tag+strconv.Itoa(i)+"</font></center></td>")
 				fmt.Fprintf(w, "<td><center>"+color_tag+strconv.Itoa(c_object.version)+"</font></center></td>")
-				for i := 0; i < len(columns); i++ {
+				for i := 0; i < len(columns)-6; i++ {
 					var index string
 					if i == 0 {
 						index = "name"
@@ -292,7 +292,7 @@ func gui_ShowMain(w http.ResponseWriter, r *http.Request) {
 						index = "mod_date"
 					} else if i == 2 {
 						index = "size"
-					} else if i == 3 {
+					}/* else if i == 3 {
 						index = "codec"
 					} else if i == 4 {
 						index = "resolution"
@@ -304,7 +304,7 @@ func gui_ShowMain(w http.ResponseWriter, r *http.Request) {
 						index = "quality"
 					} else if i == 8 {
 						index = "sample"
-					}
+					}*/
 					if val, found := c_object.attributes[index]; found {
 						if index == "name" {
 							fmt.Fprintf(w, "<td><center><form action=\"/change_name\"><input hidden type=\"text\" name=\"pfname\" value=\""+val+"\"></input><input type=\"text\" name=\"fname\" value=\""+val+"\"></input><input type=\"submit\" value=\"Save\"></form></center></td>")
